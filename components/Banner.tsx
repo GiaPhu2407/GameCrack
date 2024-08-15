@@ -44,7 +44,7 @@ const Banner = () => {
             It is not so much for its beauty that the forest makes a claim
             upon mens hearts, as for that subtle something, that quality of
             air that emanation from old trees, that so wonderfully changes and
-            renews a weary spirit.
+            renews a weary spirit and super very human.
           </p>
           <div className="flex gap-2">
             <button className="btn btn-primary">Explore</button>
