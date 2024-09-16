@@ -1,0 +1,142 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+model Role {
+  id       String  @id @default(uuid())
+  rolename String
+
+  admins       Admin[]
+  khachHangs   KhachHang[]
+  chuTros      ChuTro[]
+}
+
+model Admin {
+  id       String  @id @default(uuid())
+  roleId   String
+  username String
+  password String
+  email    String
+  HoTen    String
+  Gioitinh String
+  NamSinh  DateTime
+  Diachi   String
+  Sdt      Int
+
+  role      Role      @relation(fields: [roleId], references: [id])
+  baiDangs  BaiDang[]
+  thongBaos ThongBao[]
+  binhLuans BinhLuan[]
+  thuePhongs ThuePhong[]
+}
+
+model KhachHang {
+  id        String  @id @default(uuid())
+  roleId    String
+  username  String
+  password  String
+  email     String
+  Diachi    String
+  HoTen     String
+  Sdt       Int
+  NamSinh   DateTime
+  Gioitinh  String
+
+  role      Role      @relation(fields: [roleId], references: [id])
+  binhLuans BinhLuan[]
+  yeuThichs YeuThich[]
+  thuePhongs ThuePhong[]
+}
+
+model ChuTro {
+  id       String  @id @default(uuid())
+  roleId   String
+  username String
+  password String
+  email    String
+  Diachi   String
+  Hoten    String
+  Sdt      Int
+  NamSinh  DateTime
+  Gioitinh String
+
+  role      Role      @relation(fields: [roleId], references: [id])
+  baiDangs  BaiDang[]
+  thongBaos ThongBao[]
+  thuePhongs ThuePhong[]
+}
+
+model BaiDang {
+  id          String  @id @default(uuid())
+  title       String
+  description String
+  DiaChi      String
+  GiaThue     Decimal
+  adminId     String
+  chutroId    String
+  trangthai   String
+
+  admin   Admin   @relation(fields: [adminId], references: [id])
+  chuTro  ChuTro  @relation(fields: [chutroId], references: [id])
+  binhLuans BinhLuan[]
+  yeuThichs YeuThich[]
+  thuePhongs ThuePhong[]
+}
+
+model BinhLuan {
+  id         String  @id @default(uuid())
+  Noidung    String
+  BaiDangId  String
+  KhachHangId String
+  adminId    String
+
+  baiDang   BaiDang   @relation(fields: [BaiDangId], references: [id])
+  khachHang KhachHang @relation(fields: [KhachHangId], references: [id])
+  admin     Admin     @relation(fields: [adminId], references: [id])
+}
+
+model YeuThich {
+  id         String  @id @default(uuid())
+  BaiDangId  String
+  KhachHangId String
+
+  baiDang   BaiDang   @relation(fields: [BaiDangId], references: [id])
+  khachHang KhachHang @relation(fields: [KhachHangId], references: [id])
+}
+
+model ThuePhong {
+  id         String  @id @default(uuid())
+  BaiDangId  String
+  KhachHangId String
+  ChutroId   String
+  adminId    String
+  Ngaythue   DateTime
+
+  baiDang   BaiDang   @relation(fields: [BaiDangId], references: [id])
+  khachHang KhachHang @relation(fields: [KhachHangId], references: [id])
+  chuTro    ChuTro    @relation(fields: [ChutroId], references: [id])
+  admin     Admin     @relation(fields: [adminId], references: [id])
+
+  ThongBao ThongBao[]
+}
+model ThongBao {
+  id        String  @id @default(uuid())
+  message   String
+  adminId   String
+  chutroId  String
+  rentalId  String
+
+  admin   Admin    @relation(fields: [adminId], references: [id])
+  chuTro  ChuTro   @relation(fields: [chutroId], references: [id])
+  rental  ThuePhong @relation(fields: [rentalId], references: [id])
+}
